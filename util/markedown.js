@@ -84,7 +84,7 @@ export function getMdData(json){
       let hasChildren=item.children&&item.children.length>0;
       newArr.push({
         "key": item.key,
-        "name":(hasChildren?placeholder+"▽":placeholder)+item.name,
+        "name":(hasChildren?placeholder+"Θ&nbsp;":placeholder)+item.name,
         "type": item.type,
         "required": item.required,
         "mockType": item.mockType,

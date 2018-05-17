@@ -9,6 +9,7 @@ const InterfaseSchema = new Schema({
   url: String,
   module_id:Number,
   project_id:Number,
+  proxy_type:Number,
   res: [{
     key:Schema.Types.Mixed,
     name: Schema.Types.Mixed,
@@ -32,8 +33,8 @@ const InterfaseSchema = new Schema({
   remind:[{
     version:String,
     description:String,
-    time_stamp:Number,
-    author_name:String
+    message:String,
+    creator:String
   }],
   record:[{
     version:String,

@@ -31,7 +31,7 @@ toc:
 ### 请求参数
 |字段名|数据类型|是否必填|描述及要求|
 |:---|:---:|:---:|:---|
-<%for(var request of interfase.req){%>|<%-request.name%>|<%-request.type%>|<%-request.required%>|<%-request.description%>|
+<%for(var request of interfase.req){%>|<%-request.name%>|<%-request.type%>|<%-request.required%>|<%-request.description||"--"%>|
 <%}%>
 
 ### 请求参数例子
@@ -43,7 +43,7 @@ toc:
 ### 响应数据
 |字段名|数据类型|说明|
 |:---|:---:|:---|
-<%for(var response of interfase.res){%>|<%-response.name%>|<%-response.type%>|<%-response.description%>|
+<%for(var response of interfase.res){%>|<%-response.name%>|<%-response.type%>|<%-response.description||"--"%>|
 <%}%>
 
 ### 响应数据例子

@@ -10,7 +10,7 @@ const http = require('http');
 const fs = require('fs');
 const debug = require('debug')('demo:server');
 const path = require('path');
-const proxy = require('koa2-pixie-proxy')({host:"<%-proxy%>"});
+const proxy = require('koa2-pixie-proxy')({host:"<%=proxy||'/'%>"});
 
 const router = require('koa-router')();
 

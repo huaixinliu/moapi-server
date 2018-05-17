@@ -7,6 +7,7 @@ const ProjectSchema = new Schema({
   description: Number,
   admin: String,
   members: String,
+  proxy:String,
   modules:[{
     type:Schema.Types.ObjectId,
     ref:'Module'
