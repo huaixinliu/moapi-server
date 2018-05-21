@@ -30,19 +30,12 @@ const InterfaseSchema = new Schema({
     mock_value: Schema.Types.Mixed,
     description: Schema.Types.Mixed
   }],
-  remind:[{
-    version:String,
-    description:String,
-    message:String,
-    creator:String
-  }],
-  record:[{
-    version:String,
-    description:String,
-    time_stamp:Number,
-    type:String,
-    author_name:String
-  }]
+  remark:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Remark'
+    }
+  ]
 },{timestamps:true});
 
 InterfaseSchema.index({id: 1});
@@ -62,9 +55,8 @@ Interfase.addInterfase = async(interfase) => {
 };
 
 
-Interfase.deleteInterfase = async(interfaseId) => {
-  const interfase =await Interfase.findOneAndRemove({id:interfaseId})
-  if(interfase){
+Interfase.deleteInterfase = async(interfase) => {
+    interfase.remove()
     Module.findOne({id:interfase.module_id}).then(module=>{
       if(!module){return};
       let index=module.interfases.findIndex(item=>item.equals(interfase._id));
@@ -74,10 +66,11 @@ Interfase.deleteInterfase = async(interfaseId) => {
         module.save()
       }
     })
+};
 
-    return interfase;
-  }
-
+Interfase.updateInterfase= async(interfase,newInterfaseInfo) => {
+    interfase.set(newInterfaseInfo);
+    await interfase.save();
 };
 
 

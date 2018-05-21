@@ -29,23 +29,21 @@ Module.addModule = async(module) => {
 };
 
 
+Module.updateModule=async(module,newModuleInfo)=>{
+  module.set(newModuleInfo);
+  await module.save();
+}
 
 
-
-Module.deleteModule = async(moduleId) => {
-  const module =await Module.findOneAndRemove({id:moduleId})
-  if(module){
-    Project.findOne({id:module.project_id}).then(project=>{
-      if(!project){return};
-      let index=project.modules.findIndex(item=>item.equals(module._id));
-      if(index>=0){
-
-        project.modules.splice(index,1)
-        project.save()
-      }
-    })
-  }
-
+Module.deleteModule = async(module) => {
+    await module.remove()
+    const project=await Project.findOne({id:module.project_id})
+    if(!project){return};
+    let index=project.modules.findIndex(item=>item.equals(module._id));
+    if(index>=0){
+      project.modules.splice(index,1)
+      await project.save()
+    }
 };
 
 

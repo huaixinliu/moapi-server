@@ -3,6 +3,7 @@ import Interfase from '../controllers/interfase';
 import Check from '../middlewares/check'
 import Record from '../middlewares/record'
 
+
 const router=koaRouter()
 router.prefix('/interfase');
 
@@ -12,9 +13,9 @@ router.get('/', function (ctx, next) {
 
 
 router.get('/:interfaseId',Interfase.getInterfase);
-router.put('/:interfaseId',Record.updateInterfaseRecord,Interfase.updateInterfase);
-router.delete('/:interfaseId',Record.deleteInterfaseRecord,Interfase.deleteInterfase);
-router.post('/',Record.addInterfaseRecord,Interfase.addInterfase);
+router.put('/:interfaseId',Check.token,Record.updateInterfaseRecord,Interfase.updateInterfase);
+router.delete('/:interfaseId',Check.token,Record.deleteInterfaseRecord,Interfase.deleteInterfase);
+router.post('/',Check.token,Record.addInterfaseRecord,Interfase.addInterfase);
 
 
 export default router

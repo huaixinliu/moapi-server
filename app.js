@@ -6,7 +6,7 @@ import onerror from 'koa-onerror';
 import bodyparser from 'koa-bodyparser';
 import logger from 'koa-logger';
 import cors from 'koa-cors';
-import session from 'koa-session';
+//import session from 'koa-session';
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
@@ -37,7 +37,7 @@ app.use(bodyparser({
 app.use(json());
 app.use(camelcase());
 app.use(logger());
-app.use(session(app));
+//app.use(session(app));
 app.use(require('koa-static')(path.join(__dirname ,'/public')));
 app.use(views(path.join(__dirname , '/views'), {extension: 'ejs'}));
 

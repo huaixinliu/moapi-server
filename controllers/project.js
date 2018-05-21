@@ -46,7 +46,8 @@ class Project extends BaseController{
     const project = new ProjectModel({
       ...defaultProject,
       ...ctx.request.body,
-      id:projectId
+      id:projectId,
+      admin:ctx.user._id
     });
     const newproject = await ProjectModel.addProject(project);
     if (newproject) {
@@ -56,6 +57,65 @@ class Project extends BaseController{
     }
   }
 
+  async deleteProject(ctx,next){
+    const project= await ProjectModel.findOne({
+      id:ctx.params.projectId
+    });
+
+    if(!project){
+      ctx.status = 400;
+      ctx.body = "项目不存在";
+    }
+
+
+
+    if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
+      ctx.status = 403;
+      ctx.body = "没有删除项目权限";
+      return;
+    }
+
+    await ProjectModel.deleteProject(project);
+
+
+    ctx.body = "删除成功";
+
+  }
+
+  async updateProject(ctx,next){
+
+
+    const project=await ProjectModel.findOne({
+      id: ctx.params.projectId
+    });
+
+
+    if(!project){
+      ctx.status = 400;
+      ctx.body = "项目不存在";
+    }
+
+
+
+    if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
+      ctx.status = 403;
+      ctx.body = "没有修改项目权限";
+      return;
+    }
+
+    await ProjectModel.updateProject(project,{
+      proxy:ctx.request.body.proxy,
+      name:ctx.request.body.name,
+      description:ctx.request.body.description,
+    });
+
+
+    ctx.body = "修改成功";
+
+
+
+  }
+
   async getProjectList(ctx, next) {
 
    if (ctx.errors) {
@@ -63,9 +123,17 @@ class Project extends BaseController{
      ctx.body = ctx.errors;
      return;
    }
+    let projects=[]
+   if(ctx.user.type===4){
+     projects=  await ProjectModel
+      .find({})
+      .populate("admin")
+   }else{
+     projects=  await ProjectModel
+      .find({$or:[{public:true},{guests:ctx.user._id}]})
+      .populate("admin")
+   }
 
-   const projects = await ProjectModel
-   .find({})
    if (!projects) {
      ctx.status = 400;
      ctx.body = {
@@ -75,6 +143,74 @@ class Project extends BaseController{
      ctx.body = projects
    }
  }
+
+ async getSelfProjectList(ctx, next) {
+
+  if (ctx.errors) {
+    ctx.status = 400;
+    ctx.body = ctx.errors;
+    return;
+  }
+
+  const projects = await ProjectModel
+  .find({admin:ctx.user._id})
+  .populate("admin")
+
+  if (!projects) {
+    ctx.status = 400;
+    ctx.body = {
+      msg: "项目不存在"
+    };
+  }else{
+    ctx.body = projects
+  }
+}
+
+
+async getDevelopProjectList(ctx, next) {
+
+ if (ctx.errors) {
+   ctx.status = 400;
+   ctx.body = ctx.errors;
+   return;
+ }
+
+ const projects = await ProjectModel
+ .find({"developers":ctx.user._id})
+ .populate("admin");
+
+ if (!projects) {
+   ctx.status = 400;
+   ctx.body = {
+     msg: "项目不存在"
+   };
+ }else{
+   ctx.body = projects
+ }
+}
+
+async getRelateProjectList(ctx, next) {
+
+ if (ctx.errors) {
+   ctx.status = 400;
+   ctx.body = ctx.errors;
+   return;
+ }
+
+ const projects = await ProjectModel
+ .find({"reporters":ctx.user._id})
+ .populate("admin");
+
+ if (!projects) {
+   ctx.status = 400;
+   ctx.body = {
+     msg: "项目不存在"
+   };
+ }else{
+   ctx.body = projects
+ }
+}
+
 
    async getProject(ctx, next) {
     ctx.checkParams('projectId').notEmpty("参数错误");
@@ -89,10 +225,15 @@ class Project extends BaseController{
     .populate({
       path:'modules',
       populate:{
-        path:'interfases'
+        path:'interfases',
+        populate:{
+          path:'remark'
+        }
       }
     })
-    .exec();
+
+
+
 
     if (!project) {
       ctx.status = 400;
@@ -102,11 +243,56 @@ class Project extends BaseController{
     }else{
       ctx.body = {
         id:project.id,
-        name:project.name,
-        modules:project.modules
+        modules:project.modules,
       };
     }
   }
+
+
+  async getProjectInfo(ctx, next) {
+   ctx.checkParams('projectId').notEmpty("参数错误");
+   if (ctx.errors) {
+     ctx.status = 400;
+     ctx.body = ctx.errors;
+     return;
+   }
+
+   const project = await ProjectModel
+   .findOne({id: ctx.params.projectId})
+   .populate("admin")
+   .populate("reporters")
+   .populate("guests")
+   .populate("developers")
+
+   let permission=1;
+
+   if(ctx.user.type===4||project.admin.id===ctx.user.id){
+     permission=4;
+   }else if(project.developers.find(item=>item.id===ctx.user.id)){
+     permission=3;
+   }else if(project.reporters.find(item=>item.id===ctx.user.id)){
+     permission=2;
+   }
+
+   if (!project) {
+     ctx.status = 400;
+     ctx.body = {
+       msg: "项目不存在"
+     };
+   }else{
+     ctx.body = {
+       permission:permission,
+       id:project.id,
+       name:project.name,
+       description:project.description,
+       developers:project.developers,
+       reporters:project.reporters,
+       guests:project.guests,
+       proxy:project.proxy,
+       admin:project.admin
+     };
+   }
+ }
 
 
   async getMarkDown(ctx, next){

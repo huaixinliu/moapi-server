@@ -10,9 +10,9 @@ router.get('/', function (ctx, next) {
 });
 
 
-router.delete('/:moduleId',Module.deleteModule);
-router.put('/:moduleId',Module.updateModule);
-router.post('/',Module.addModule);
+router.delete('/:moduleId',Check.token,Module.deleteModule);
+router.put('/:moduleId',Check.token,Module.updateModule);
+router.post('/',Check.token,Module.addModule);
 
 
 export default router

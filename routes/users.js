@@ -6,9 +6,9 @@ const router=koaRouter()
 router.prefix('/users');
 
 
-
-router.post('/add',Check.token,User.addUser);
-router.post('/delete',User.deleteUser);
+router.get('/',Check.token,User.getUserList);
+router.post('/add',Check.token,Check.admin,User.addUser);
+router.post('/delete',Check.token,Check.admin,User.deleteUser);
 router.post('/signup',User.signup);
 router.post('/signin',User.signin);
 router.post('/signout',User.signout);

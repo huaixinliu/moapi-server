@@ -1,7 +1,9 @@
 import InterfaseModel from './../models/interfase';
+import ProjectModel from './../models/project';
 import defaultInterfase from './../defaultData/interfase'
 import BaseController from '../base/baseController'
 import xss  from 'xss';
+
 
 class Interfase extends BaseController{
   constructor(){
@@ -73,17 +75,33 @@ class Interfase extends BaseController{
     }
 
 
-    await InterfaseModel.findOneAndUpdate({
+
+
+    const interfase =await InterfaseModel.findOne({
       id: ctx.params.interfaseId
-    }, {
-      ...ctx.request.body,
-      id:ctx.params.interfaseId
-    }, function(err) {
-      if(err){
-        ctx.status = 400;
-        ctx.body=err;
-      }
     });
+
+    if(!interfase){
+
+      return;
+    }
+
+
+
+    if(ctx.user.type!==4){
+      const project=await ProjectModel.findOne({
+        id:interfase.project_id
+      });
+      if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
+        ctx.status = 403;
+        ctx.body = "没有修改接口权限";
+        return;
+      }
+    }
+
+
+
+    await InterfaseModel.updateInterfase(interfase,ctx.request.body)
 
     ctx.body = {
       success: true,
@@ -99,7 +117,27 @@ class Interfase extends BaseController{
       return;
     }
     let interfaseId = xss(ctx.params.interfaseId.trim());
-    const interfase=await InterfaseModel.deleteInterfase(interfaseId);
+    const interfase=await InterfaseModel.findOne({id:interfaseId});
+
+    if(!interfase){
+      ctx.status = 400;
+      ctx.body = "接口不存在";
+      return;
+    }
+
+    if(ctx.user.type!==4){
+      const project= await ProjectModel.findOne({
+        id:interfase.project_id
+      });
+
+      if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
+        ctx.status = 403;
+        ctx.body = "没有删除接口权限";
+        return;
+      }
+    }
+
+    await InterfaseModel.deleteInterfase(interfase);
     ctx.body = interfase;
   }
 

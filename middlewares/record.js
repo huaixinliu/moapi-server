@@ -12,7 +12,7 @@ class Record extends BaseController{
     const recordId=await this.getId('record_id');
     const info={
       id:recordId,
-      creator:'admin',
+      creator:ctx.user.name,
       type:'ADD_INTERFASE',
       interfase_id:ctx.response.body.id,
       interfaseName:ctx.response.body.name,
@@ -25,11 +25,10 @@ class Record extends BaseController{
 
   async deleteInterfaseRecord(ctx, next){
     await next();
-    console.log(ctx.response.body)
     const recordId=await this.getId('record_id');
     const info={
       id:recordId,
-      creator:'admin',
+      creator:ctx.user.name,
       type:'DELETE_INTERFASE',
       interfase_id:ctx.request.body.id,
       interfaseName:ctx.request.body.name,
@@ -41,9 +40,10 @@ class Record extends BaseController{
   }
 
   async updateInterfaseRecord(ctx, next){
+
     const info={
       id:null,
-      creator:'admin',
+      creator:ctx.user.name,
       type:'UPDATE_INTERFASE',
       message:ctx.request.body.record_message,
       interfase_id:ctx.request.body.id,

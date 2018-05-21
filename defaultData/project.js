@@ -2,9 +2,10 @@ export default{
   name: "新建项目",
   description:"",
   proxy:"/",
-  members: [],
+  public:true,
+  reporters:[],
+  developers: [],
   modules:[],
   version:"V1.0.0",
   versions:[],
-  record:[]
 }
