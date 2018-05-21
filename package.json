@@ -6,7 +6,7 @@
     "start": "node index",
     "dev": "./node_modules/.bin/nodemon index",
     "inspect": "./node_modules/.bin/nodemon --inspect-brk index",
-    "prd": "pm2 start index",
+    "prd": "pm2 start index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -37,6 +37,7 @@
     "mockjs": "^1.0.1-beta3",
     "mongoose": "^4.11.11",
     "path-to-regexp": "^2.2.1",
+    "pm2": "^2.10.4",
     "pug": "^2.0.0-rc.1",
     "request-promise": "^4.2.2",
     "uuid": "^3.1.0",
