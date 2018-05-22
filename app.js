@@ -25,7 +25,7 @@ mongoose.Promise = bluebird;
 mongoose.connect('mongodb://97.64.36.18:27017/moapi',{useMongoClient: true});
 
 // error handler
-onerror(app);
+//onerror(app);
 
 // middlewares
 app.keys = ['moapi'];

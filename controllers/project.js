@@ -34,12 +34,7 @@ class Project extends BaseController{
     this.addProject=this.addProject.bind(this);
   }
   async addProject(ctx, next) {
-    ctx.checkBody('name').notEmpty("项目名称不能为空");
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
 
     const projectId=await this.getId('project_id');
 
@@ -51,9 +46,7 @@ class Project extends BaseController{
     });
     const newproject = await ProjectModel.addProject(project);
     if (newproject) {
-      ctx.body = {
-        success: true,
-      };
+      ctx.body = "";
     }
   }
 
@@ -64,21 +57,21 @@ class Project extends BaseController{
 
     if(!project){
       ctx.status = 400;
-      ctx.body = "项目不存在";
+      ctx.body = {message:"项目不存在"};
     }
 
 
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有删除项目权限";
+      ctx.body = {message:"没有删除项目权限"};
       return;
     }
 
     await ProjectModel.deleteProject(project);
 
 
-    ctx.body = "删除成功";
+    ctx.body = "";
 
   }
 
@@ -92,14 +85,14 @@ class Project extends BaseController{
 
     if(!project){
       ctx.status = 400;
-      ctx.body = "项目不存在";
+      ctx.body = {message:"项目不存在"};
     }
 
 
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有修改项目权限";
+      ctx.body = {message:"没有修改项目权限"};
       return;
     }
 
@@ -118,11 +111,7 @@ class Project extends BaseController{
 
   async getProjectList(ctx, next) {
 
-   if (ctx.errors) {
-     ctx.status = 400;
-     ctx.body = ctx.errors;
-     return;
-   }
+
     let projects=[]
    if(ctx.user.type===4){
      projects=  await ProjectModel
@@ -136,8 +125,7 @@ class Project extends BaseController{
 
    if (!projects) {
      ctx.status = 400;
-     ctx.body = {
-       msg: "项目不存在"
+     ctx.body = {message: "项目不存在"
      };
    }else{
      ctx.body = projects
@@ -146,11 +134,7 @@ class Project extends BaseController{
 
  async getSelfProjectList(ctx, next) {
 
-  if (ctx.errors) {
-    ctx.status = 400;
-    ctx.body = ctx.errors;
-    return;
-  }
+
 
   const projects = await ProjectModel
   .find({admin:ctx.user._id})
@@ -158,8 +142,7 @@ class Project extends BaseController{
 
   if (!projects) {
     ctx.status = 400;
-    ctx.body = {
-      msg: "项目不存在"
+    ctx.body ={message: "项目不存在"
     };
   }else{
     ctx.body = projects
@@ -169,11 +152,6 @@ class Project extends BaseController{
 
 async getDevelopProjectList(ctx, next) {
 
- if (ctx.errors) {
-   ctx.status = 400;
-   ctx.body = ctx.errors;
-   return;
- }
 
  const projects = await ProjectModel
  .find({"developers":ctx.user._id})
@@ -181,8 +159,7 @@ async getDevelopProjectList(ctx, next) {
 
  if (!projects) {
    ctx.status = 400;
-   ctx.body = {
-     msg: "项目不存在"
+   ctx.body = {message: "项目不存在"
    };
  }else{
    ctx.body = projects
@@ -203,8 +180,7 @@ async getRelateProjectList(ctx, next) {
 
  if (!projects) {
    ctx.status = 400;
-   ctx.body = {
-     msg: "项目不存在"
+   ctx.body = {message: "项目不存在"
    };
  }else{
    ctx.body = projects
@@ -213,12 +189,8 @@ async getRelateProjectList(ctx, next) {
 
 
    async getProject(ctx, next) {
-    ctx.checkParams('projectId').notEmpty("参数错误");
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
 
     const project = await ProjectModel
     .findOne({id: ctx.params.projectId})
@@ -237,8 +209,7 @@ async getRelateProjectList(ctx, next) {
 
     if (!project) {
       ctx.status = 400;
-      ctx.body = {
-        msg: "项目不存在"
+      ctx.body = {message: "项目不存在"
       };
     }else{
       ctx.body = {
@@ -250,12 +221,7 @@ async getRelateProjectList(ctx, next) {
 
 
   async getProjectInfo(ctx, next) {
-   ctx.checkParams('projectId').notEmpty("参数错误");
-   if (ctx.errors) {
-     ctx.status = 400;
-     ctx.body = ctx.errors;
-     return;
-   }
+
 
    const project = await ProjectModel
    .findOne({id: ctx.params.projectId})
@@ -276,8 +242,7 @@ async getRelateProjectList(ctx, next) {
 
    if (!project) {
      ctx.status = 400;
-     ctx.body = {
-       msg: "项目不存在"
+     ctx.body ={message: "项目不存在"
      };
    }else{
      ctx.body = {

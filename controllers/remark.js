@@ -8,12 +8,8 @@ class Remark extends BaseController{
     this.updateRemark=this.updateRemark.bind(this);
   }
   async addRemark(ctx, next){
-    ctx.checkBody('message').notEmpty("备注不能为空");
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
 
     if(ctx.user.type!==4){
       const project=await ProjectModel.findOne({
@@ -21,7 +17,7 @@ class Remark extends BaseController{
       });
       if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
         ctx.status = 403;
-        ctx.body = "没有添加权限";
+        ctx.body = {message:"没有添加权限"};
         return;
       }
     }
@@ -46,7 +42,7 @@ class Remark extends BaseController{
 
     if(!remark){
       ctx.status=400;
-      ctx.body="备注不存在"
+      ctx.body={message:"备注不存在"}
     }
 
     if(ctx.user.type!==4){
@@ -55,7 +51,7 @@ class Remark extends BaseController{
       });
       if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
         ctx.status = 403;
-        ctx.body = "没有删除权限";
+        ctx.body ={message: "没有删除权限"};
         return;
       }
     }
@@ -77,7 +73,7 @@ class Remark extends BaseController{
 
     if(!remark){
       ctx.status=400;
-      ctx.body="备注不存在"
+      ctx.body={message:"备注不存在"}
     }
 
     if(ctx.user.type!==4){
@@ -86,7 +82,7 @@ class Remark extends BaseController{
       });
       if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
         ctx.status = 403;
-        ctx.body = "没有修改权限";
+        ctx.body = {message:"没有修改权限"};
         return;
       }
     }

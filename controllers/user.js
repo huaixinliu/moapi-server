@@ -9,14 +9,8 @@ class User extends BaseController{
     this.signup=this.signup.bind(this)
   }
   async signup (ctx, next){
-    ctx.checkBody('name').notEmpty("昵称不能为空");
-    ctx.checkBody('password').notEmpty("密码不能为空");
-    ctx.checkBody('phone').isMobilePhone("无效的手机号", ['zh-CN']);
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
     const phone = xss(ctx.request.body.phone.trim());
     const name = xss(ctx.request.body.name.trim());
     const password = xss(ctx.request.body.password.trim());
@@ -26,8 +20,7 @@ class User extends BaseController{
 
     if (user) {
       ctx.status = 400;
-      ctx.body = {
-        msg: "手机号已经注册过"
+      ctx.body ={message: "手机号已经注册过"
       };
       return;
     }
@@ -47,13 +40,8 @@ class User extends BaseController{
   }
 
   async signin(ctx, next) {
-    ctx.checkBody('password').notEmpty("密码不能为空");
-    ctx.checkBody('phone').notEmpty("手机号不能为空").isMobilePhone("无效的手机号", ['zh-CN']);
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
     let phone = xss(ctx.request.body.phone.trim());
     let password = xss(ctx.request.body.password.trim());
     let user = await UserModel
@@ -63,9 +51,7 @@ class User extends BaseController{
     if (!user) {
 
       ctx.status = 400;
-      ctx.body = {
-        success: false,
-        msg: "该手机号尚未注册"
+      ctx.body = {message:"该手机号尚未注册"
       };
     } else if (user.password === password) {
       let accessToken = uuidv4();
@@ -83,9 +69,7 @@ class User extends BaseController{
 
     } else {
       ctx.status = 400;
-      ctx.body = {
-        success: false,
-        msg: "密码错误"
+      ctx.body = {message: "密码错误"
       };
     }
 
@@ -100,9 +84,7 @@ class User extends BaseController{
     if (!user) {
 
       ctx.status = 400;
-      ctx.body = {
-        success: false,
-        msg: "用户不存在"
+      ctx.body = {message:"用户不存在"
       };
     } else {
       let _accessToken = uuidv4();
@@ -111,9 +93,7 @@ class User extends BaseController{
       }, {
         access_token: _accessToken
       },function(){
-        ctx.body = {
-          success: true,
-          msg: "退出登录"
+        ctx.body = {message: "退出登录"
         };
       });
 
@@ -123,13 +103,7 @@ class User extends BaseController{
   }
 
   async addUser(ctx, next) {
-    ctx.checkBody('name').notEmpty("昵称不能为空");
-    ctx.checkBody('phone').isMobilePhone("无效的手机号", ['zh-CN']);
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
     const defaultUser = {
       password: '123456',
       age: 20
@@ -155,14 +129,11 @@ class User extends BaseController{
     let user = await UserModel.findOne({phone: phone}).exec();
     if (!user) {
       ctx.status = 400;
-      ctx.body = {
-        msg: "删除账号不纯在"
+      ctx.body = {message:"删除账号不纯在"
       };
     } else {
       UserModel.remove({phone: phone}).then(() => {
-        ctx.body = {
-          success: true,
-          msg: "删除成功"
+        ctx.body = {message:"删除成功"
         };
       });
     }
@@ -176,7 +147,7 @@ class User extends BaseController{
 
 
   async getWatchProject(ctx,next){
-    
+
     let user = await UserModel
     .findOne({_id:ctx.user._id})
     .populate('watch_projects');
@@ -187,8 +158,7 @@ class User extends BaseController{
     let project = await ProjectModel.findOne({id:ctx.request.body.project_id});
     if(!project){
       ctx.status = 400;
-      ctx.body = {
-        msg: "项目不存在"
+      ctx.body ={message: "项目不存在"
       };
       return;
     }
@@ -202,16 +172,14 @@ class User extends BaseController{
     let project = await ProjectModel.findOne({id:ctx.request.body.project_id});
     if(!project){
       ctx.status = 400;
-      ctx.body = {
-        msg: "项目不存在"
+      ctx.body = {message: "项目不存在"
       };
       return;
     }
     let index =ctx.user.watch_projects.findIndex(id=>id.equals(project._id));
     if(index===-1){
       ctx.status = 400;
-      ctx.body = {
-        msg: "项目未关注"
+      ctx.body = {message:"项目未关注"
       };
       return;
     }

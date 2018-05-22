@@ -8,8 +8,7 @@ class Check{
     if (!accessToken) {
       ctx.status = 403;
       ctx.body = {
-        success: false,
-        err: '请登录'
+        message: '请登录'
       };
       return next;
     }
@@ -20,10 +19,9 @@ class Check{
 
 
     if (!user) {
-      ctx.status=403;
+      ctx.status = 403;
       ctx.body = {
-        success: false,
-        err: '验证失效,请重新登录'
+        message: '请登录'
       };
       return next;
     }
@@ -39,9 +37,9 @@ class Check{
 
   async admin(ctx,next){
     if (ctx.user.type!==4) {
-      ctx.status=403;
+      ctx.status = 403;
       ctx.body = {
-        err: '没有管理员权限'
+        message: '请登录'
       };
       return next;
     }

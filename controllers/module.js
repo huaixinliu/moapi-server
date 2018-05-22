@@ -12,14 +12,7 @@ class Module extends BaseController{
 
   async addModule(ctx, next){
 
-    ctx.checkBody('name').notEmpty("模块名称不能为空");
-    ctx.checkBody('project_id').notEmpty("项目id不能为空");
 
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
 
     const project= await ProjectModel.findOne({
       id:ctx.request.body.project_id
@@ -29,7 +22,7 @@ class Module extends BaseController{
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有修改模块权限";
+      ctx.body = {message:"没有修改模块权限"};
       return;
     }
 
@@ -50,11 +43,7 @@ class Module extends BaseController{
 
   async updateModule(ctx, next) {
 
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
 
 
     const module=await ModuleModel.findOne({
@@ -63,7 +52,7 @@ class Module extends BaseController{
 
     if (!module) {
       ctx.status = 400;
-      ctx.body = "模块不存在"
+      ctx.body = {message:"模块不存在"}
       return;
     }
 
@@ -73,30 +62,28 @@ class Module extends BaseController{
       });
       if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
         ctx.status = 403;
-        ctx.body = "没有修改模块权限";
+        ctx.body = {message:"没有修改模块权限"};
         return;
       }
     }
 
     await ModuleModel.updateModule(module,ctx.request.body)
 
-    ctx.body = "更新成功";
+    ctx.body = {message:"更新成功"};
   }
 
   async deleteModule(ctx, next) {
 
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
+
     const moduleId =ctx.params.moduleId
 
     const module=await ModuleModel.findOne({id:moduleId})
 
     if(!module){
       ctx.status = 400;
-      ctx.body="模块不存在"
+      ctx.body={message:"模块不存在"}
     }
 
 
@@ -105,16 +92,13 @@ class Module extends BaseController{
     });
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有删除模块权限";
+      ctx.body = {message:"没有删除模块权限"};
       return;
     }
 
 
     await ModuleModel.deleteModule(module,project);
-    ctx.body = {
-      success: true,
-      msg: "删除成功"
-    };
+    ctx.body ={message:"删除成功"};
   }
 
 }

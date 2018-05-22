@@ -41,23 +41,18 @@ class Interfase extends BaseController{
 
   async addInterfase(ctx, next){
 
-    ctx.checkBody('name').notEmpty("接口名称不能为空");
-    ctx.checkBody('url').notEmpty("url不能为空");
-    ctx.checkBody('module_id').notEmpty("moduleId不能为空");
 
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
 
     const module=await ModuleModel.findOne({id:ctx.request.body.module_id});
     const project=await ProjectModel.findOne({id:ctx.request.body.project_id});
 
 
+
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有修改接口权限";
+      ctx.body = {
+        message: '没有修改接口权限'
+      };
       return;
     }
 
@@ -78,7 +73,7 @@ class Interfase extends BaseController{
       ctx.record.interfase = newInterfase;
       ctx.record.module = module;
       ctx.record.project = project;
-      ctx.body="添加成功"
+      ctx.body={message:"添加成功"}
     }
   }
 
@@ -88,17 +83,6 @@ class Interfase extends BaseController{
 
 
   async updateInterfase(ctx, next) {
-    ctx.checkParams('interfaseId').notEmpty("参数错误");
-    ctx.checkBody('name').notEmpty("接口名称不能为空");
-    ctx.checkBody('url').notEmpty("url不能为空");
-    ctx.checkBody('module_id').notEmpty("moduleId不能为空");
-
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
-
 
 
 
@@ -122,7 +106,7 @@ class Interfase extends BaseController{
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有修改接口权限";
+      ctx.body ={ message:"没有修改接口权限"};
       return;
     }
 
@@ -135,18 +119,14 @@ class Interfase extends BaseController{
     ctx.record.project = project;
 
     ctx.body = {
-      success: true,
+      message: "更新成功",
     };
 
   }
 
   async deleteInterfase(ctx, next) {
-    ctx.checkParams('interfaseId').notEmpty("interfaseId 不能为空");
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
+
+
     let interfaseId = xss(ctx.params.interfaseId.trim());
     const interfase=await InterfaseModel
     .findOne({id:interfaseId})
@@ -155,7 +135,7 @@ class Interfase extends BaseController{
 
     if(!interfase){
       ctx.status = 400;
-      ctx.body = "接口不存在";
+      ctx.body = {message:"接口不存在"};
       return;
     }
     const module =interfase.module;
@@ -165,7 +145,7 @@ class Interfase extends BaseController{
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
-      ctx.body = "没有删除接口权限";
+      ctx.body = {message:"没有删除接口权限"};
       return;
     }
 
@@ -175,7 +155,7 @@ class Interfase extends BaseController{
     ctx.record.interfase = interfase;
     ctx.record.module = module;
     ctx.record.project = project;
-    ctx.body = "删除成功";
+    ctx.body = {message:"删除成功"};
   }
 
 }

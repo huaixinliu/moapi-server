@@ -9,6 +9,9 @@ class Record extends BaseController{
   async addInterfaseRecord(ctx, next){
     ctx.record=ctx.record||{}
     await next();
+    if(ctx.status!==200){
+      return
+    }
     const recordId=await this.getId('record_id');
     const type=ctx.method==="POST"?"ADD_INTERFASE":(ctx.method==="PUT"?"UPDATE_INTERFASE":"DELETE_INTERFASE");
     const info={
