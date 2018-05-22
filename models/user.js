@@ -9,6 +9,7 @@ var UserSchema = new Schema({
   password: String,
   type:Number,
   id:Number,
+  watch_projects:[{type:Schema.Types.ObjectId,ref:'Project'}]
 },{timestamps:true});
 
 UserSchema.index({id: 1});

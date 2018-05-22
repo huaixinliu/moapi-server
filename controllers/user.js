@@ -2,6 +2,7 @@ import UserModel from './../models/user';
 import uuidv4  from 'uuid/v4';
 import xss  from 'xss';
 import BaseController from '../base/baseController'
+import ProjectModel from '../models/project'
 class User extends BaseController{
   constructor(){
     super()
@@ -55,7 +56,9 @@ class User extends BaseController{
     }
     let phone = xss(ctx.request.body.phone.trim());
     let password = xss(ctx.request.body.password.trim());
-    let user = await UserModel.findOne({phone: phone});
+    let user = await UserModel
+    .findOne({phone: phone})
+    .populate("watch_projects");
 
     if (!user) {
 
@@ -66,16 +69,15 @@ class User extends BaseController{
       };
     } else if (user.password === password) {
       let accessToken = uuidv4();
-      UserModel.update({
-        phone: phone
-      }, {
-        access_token: accessToken
-      }, function(err) {});
+
+      user.set({access_token: accessToken})
+      await user.save()
 
       ctx.body = {
         name:user.name,
         accessToken:accessToken,
         phone:user.phone,
+        watchProjects:user.watch_projects,
         type:"ADMIN"
       };
 
@@ -169,6 +171,53 @@ class User extends BaseController{
   async getUserList(ctx,next){
     let userList = await UserModel.find({});
     ctx.body=userList
+  }
+
+
+
+  async getWatchProject(ctx,next){
+    
+    let user = await UserModel
+    .findOne({_id:ctx.user._id})
+    .populate('watch_projects');
+    ctx.body=user.watch_projects
+  }
+
+  async addWatchProject(ctx,next){
+    let project = await ProjectModel.findOne({id:ctx.request.body.project_id});
+    if(!project){
+      ctx.status = 400;
+      ctx.body = {
+        msg: "项目不存在"
+      };
+      return;
+    }
+
+    ctx.user.watch_projects.push(project._id);
+    await ctx.user.save()
+    ctx.body="关注成功"
+  }
+
+  async deleteWatchProject(ctx,next){
+    let project = await ProjectModel.findOne({id:ctx.request.body.project_id});
+    if(!project){
+      ctx.status = 400;
+      ctx.body = {
+        msg: "项目不存在"
+      };
+      return;
+    }
+    let index =ctx.user.watch_projects.findIndex(id=>id.equals(project._id));
+    if(index===-1){
+      ctx.status = 400;
+      ctx.body = {
+        msg: "项目未关注"
+      };
+      return;
+    }
+    ctx.user.watch_projects.splice(index,1);
+    await ctx.user.save()
+    ctx.body="取消成功"
   }
 
 }

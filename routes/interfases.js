@@ -13,8 +13,8 @@ router.get('/', function (ctx, next) {
 
 
 router.get('/:interfaseId',Interfase.getInterfase);
-router.put('/:interfaseId',Check.token,Record.updateInterfaseRecord,Interfase.updateInterfase);
-router.delete('/:interfaseId',Check.token,Record.deleteInterfaseRecord,Interfase.deleteInterfase);
+router.put('/:interfaseId',Check.token,Record.addInterfaseRecord,Interfase.updateInterfase);
+router.delete('/:interfaseId',Check.token,Record.addInterfaseRecord,Interfase.deleteInterfase);
 router.post('/',Check.token,Record.addInterfaseRecord,Interfase.addInterfase);
 
 

@@ -9,8 +9,15 @@ class Record extends BaseController{
     const interfaseId=ctx.params.interfaseId
 
     const records=await RecordModel.find({interfase_id:interfaseId})
-          .where('type').in(['ADD_INTERFASE', 'UPDATE_INTERFASE','DELETE_INTERFASE']);
-    console.log(records)
+          .where('type')
+          .in(['ADD_INTERFASE', 'UPDATE_INTERFASE','DELETE_INTERFASE']);
+    ctx.body=records;
+  }
+  async getRecord(ctx, next){
+    const ProjectList=ctx.request.body.project_ids;
+    const records=await RecordModel.find({})
+          .where('project')
+          .in(ProjectList);
     ctx.body=records;
   }
 

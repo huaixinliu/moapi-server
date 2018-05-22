@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Module from './module'
+import ModuleModel from './module'
 const Schema = mongoose.Schema;
 
 const InterfaseSchema = new Schema({
@@ -9,6 +9,14 @@ const InterfaseSchema = new Schema({
   url: String,
   module_id:Number,
   project_id:Number,
+  module:{
+    type: Schema.Types.ObjectId,
+    ref: 'Module'
+  },
+  project:{
+    type: Schema.Types.ObjectId,
+    ref: 'Project'
+  },
   proxy_type:Number,
   res: [{
     key:Schema.Types.Mixed,
@@ -42,22 +50,18 @@ InterfaseSchema.index({id: 1});
 
 const Interfase = mongoose.model("Interfase", InterfaseSchema);
 
-Interfase.addInterfase = async(interfase) => {
-  const newInterfase = await interfase.save(err=>{
-    if(!err){
-      Module.findOne({id:interfase.module_id}).exec((err,module)=>{
-        module.interfases.push(interfase._id);
-        module.save()
-      })
-    }
-  });
+Interfase.addInterfase = async(interfase,module) => {
+  const newInterfase = await interfase.save();
+
+  module.interfases.push(interfase._id);
+  module.save()
   return newInterfase;
 };
 
 
 Interfase.deleteInterfase = async(interfase) => {
     interfase.remove()
-    Module.findOne({id:interfase.module_id}).then(module=>{
+    ModuleModel.findOne({id:interfase.module_id}).then(module=>{
       if(!module){return};
       let index=module.interfases.findIndex(item=>item.equals(interfase._id));
       if(index>=0){

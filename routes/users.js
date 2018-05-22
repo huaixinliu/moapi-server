@@ -13,4 +13,8 @@ router.post('/signup',User.signup);
 router.post('/signin',User.signin);
 router.post('/signout',User.signout);
 
+router.get('/watch-project',Check.token,User.getWatchProject);
+router.post('/watch-project',Check.token,User.addWatchProject);
+router.put('/watch-project',Check.token,User.deleteWatchProject);
+
 export default router

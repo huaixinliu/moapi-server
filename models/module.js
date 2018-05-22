@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Project from './project'
+
 const Schema = mongoose.Schema;
 
 const ModuleSchema = new Schema({
@@ -7,6 +7,10 @@ const ModuleSchema = new Schema({
   name: String,
   description: String,
   project_id:Number,
+  project:{
+    type:Schema.Types.ObjectId,
+    ref:'Project'
+  },
   interfases:[{
     type:Schema.Types.ObjectId,
     ref:'Interfase'
@@ -18,13 +22,10 @@ ModuleSchema.index({id: 1});
 
 const Module = mongoose.model("Module", ModuleSchema);
 
-Module.addModule = async(module) => {
+Module.addModule = async(module,project) => {
   module = await module.save();
-  const project= await Project.findOne({id:module.project_id})
-  if(project){
-    project.modules.push(module._id);
-    project.save()
-  }
+  project.modules.push(module._id);
+  project.save()
   return module;
 };
 
@@ -35,10 +36,8 @@ Module.updateModule=async(module,newModuleInfo)=>{
 }
 
 
-Module.deleteModule = async(module) => {
+Module.deleteModule = async(module,project) => {
     await module.remove()
-    const project=await Project.findOne({id:module.project_id})
-    if(!project){return};
     let index=project.modules.findIndex(item=>item.equals(module._id));
     if(index>=0){
       project.modules.splice(index,1)
