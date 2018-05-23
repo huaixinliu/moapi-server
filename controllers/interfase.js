@@ -61,13 +61,16 @@ class Interfase extends BaseController{
 
     const interfaseId=await this.getId('interfase_id');
 
-    const interfase = new InterfaseModel({
+    const interfaseInfo={
       ...defaultInterfase,
+      ...project.template,
       ...ctx.request.body,
       id:interfaseId,
       project:project._id,
       module:module._id
-    });
+    }
+
+    const interfase = new InterfaseModel(interfaseInfo);
     const newInterfase = await InterfaseModel.addInterfase(interfase,module);
     if (newInterfase) {
       ctx.record.interfase = newInterfase;

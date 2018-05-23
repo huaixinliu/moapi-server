@@ -8,4 +8,9 @@ export default{
   modules:[],
   version:"V1.0.0",
   versions:[],
+  template:{
+    headers:[],
+    req:[],
+    res:[]
+  }
 }

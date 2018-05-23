@@ -28,6 +28,12 @@ const InterfaseSchema = new Schema({
     mock_value: Schema.Types.Mixed,
     description: Schema.Types.Mixed,
   }],
+  headers: [{
+    key:Schema.Types.Mixed,
+    name: Schema.Types.Mixed,
+    description: Schema.Types.Mixed,
+    value: Schema.Types.Mixed,
+  }],
   req:[{
     key:Schema.Types.Mixed,
     name: Schema.Types.Mixed,

@@ -5,9 +5,7 @@ import validate from "../middlewares/validate"
 const router=koaRouter()
 router.prefix('/module');
 
-router.get('/', function (ctx, next) {
-  ctx.body = 'this is a interface api';
-});
+
 
 
 router.delete('/:moduleId',validate("DELMOD"),Check.token,Module.deleteModule);

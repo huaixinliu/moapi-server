@@ -97,9 +97,10 @@ class Project extends BaseController{
     }
 
     await ProjectModel.updateProject(project,{
-      proxy:ctx.request.body.proxy,
-      name:ctx.request.body.name,
-      description:ctx.request.body.description,
+      proxy:ctx.request.body.proxy||project.proxy,
+      name:ctx.request.body.name||project.name,
+      description:ctx.request.body.description||project.description,
+      template:ctx.request.body.template||project.template,
     });
 
 
@@ -254,7 +255,8 @@ async getRelateProjectList(ctx, next) {
        reporters:project.reporters,
        guests:project.guests,
        proxy:project.proxy,
-       admin:project.admin
+       admin:project.admin,
+       template:project.template
      };
    }
  }

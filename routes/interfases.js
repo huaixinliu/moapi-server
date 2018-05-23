@@ -10,9 +10,9 @@ router.prefix('/interfase');
 
 
 router.get('/:interfaseId',Interfase.getInterfase);
-router.put('/:interfaseId',validate("ADDINT"),Check.token,Record.addInterfaseRecord,Interfase.updateInterfase);
+router.put('/:interfaseId',validate("UPINT"),Check.token,Record.addInterfaseRecord,Interfase.updateInterfase);
 router.delete('/:interfaseId',validate("DELINT"),Check.token,Record.addInterfaseRecord,Interfase.deleteInterfase);
-router.post('/',validate("UPINT"),Check.token,Record.addInterfaseRecord,Interfase.addInterfase);
+router.post('/',validate("ADDINT"),Check.token,Record.addInterfaseRecord,Interfase.addInterfase);
 
 
 export default router

@@ -5,6 +5,7 @@ export default {
   proxy_type:0,
   res: [],
   req:[],
+  headers:[],
   remind:[],
   record:[]
   }

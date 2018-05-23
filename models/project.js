@@ -6,6 +6,11 @@ const ProjectSchema = new Schema({
   name: String,
   description: String,
   public:Boolean,
+  template:{
+    headers:Schema.Types.Mixed,
+    req:Schema.Types.Mixed,
+    res:Schema.Types.Mixed
+  },
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'User'

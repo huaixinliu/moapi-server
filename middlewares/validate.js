@@ -37,15 +37,17 @@ export default  function(type){
     else if(type==='ADDUSER'){
       ctx.checkBody('name').notEmpty("昵称不能为空");
       ctx.checkBody('password').notEmpty("密码不能为空");
-      ctx.checkBody('phone').isMobilePhone("无效的手机号", ['zh-CN']);
+      ctx.checkBody('phone').notEmpty("手机号不能为空").isMobilePhone("无效的手机号", ['zh-CN']);
     }else if(type==='SIGNUP'){
       ctx.checkBody('name').notEmpty("昵称不能为空");
       ctx.checkBody('password').notEmpty("密码不能为空");
-      ctx.checkBody('phone').isMobilePhone("无效的手机号", ['zh-CN']);
+      ctx.checkBody('phone').notEmpty("手机号不能为空").isMobilePhone("无效的手机号", ['zh-CN']);
     }else if(type==='SIGNIN'){
       ctx.checkBody('password').notEmpty("密码不能为空");
       ctx.checkBody('phone').notEmpty("手机号不能为空").isMobilePhone("无效的手机号", ['zh-CN']);
     }
+
+
 
     if (ctx.errors) {
       ctx.status = 400;
@@ -54,6 +56,8 @@ export default  function(type){
       };
       return;
     }
+
+    await next()
 
   }
 }

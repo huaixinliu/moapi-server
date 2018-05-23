@@ -41,7 +41,7 @@ class User extends BaseController{
 
   async signin(ctx, next) {
 
-
+console.log(99999)
     let phone = xss(ctx.request.body.phone.trim());
     let password = xss(ctx.request.body.password.trim());
     let user = await UserModel
