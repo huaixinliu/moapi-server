@@ -24,16 +24,16 @@ class Record extends BaseController{
     };
   }
   async getRecord(ctx, next){
-    const ProjectList=ctx.request.body.project_ids;
+    const projectList=ctx.request.query.projectIds.split(",");
     const pageSize=ctx.query.pageSize||50;
     const page=(ctx.query.page||1)-1;
     const total=await RecordModel.find({})
-        .where('project')
-        .in(ProjectList)
+        .where('project_id')
+        .in(projectList)
         .count({});
     const records=await RecordModel.find({})
-      .where('project')
-      .in(ProjectList)
+      .where('project_id')
+      .in(projectList)
       .sort({'createdAt':-1})
       .skip(pageSize*page)
       .limit(pageSize);
