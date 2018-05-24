@@ -79,6 +79,7 @@ a, a:visited {
 
 table{
   border: 1px solid #ddd;
+  width:100%;
   border-spacing: 0;
   border-collapse: collapse;
 }
@@ -89,17 +90,66 @@ th,td{
   line-height: 1.42857143;
 }
 
+blockquote{
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 22px;
+}
+
 .doc-wrapper{
-  padding: 20px;
-  padding-left: 230px;
+  padding: 60px 20px 20px 220px;
+}
+.doc-header{
+  background: #09c;;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 60px;
+  line-height: 60px;
+  color:#fff;
+  padding: 0 25px;
+  z-index: 3;
+  font-size: 20px;
+  overflow: hidden;
+}
+.doc-header-right{
+  float: right;
+}
+.doc-header-right {
+  margin: 0;
+  padding-right: 30px;
+  list-style: none;
+  overflow: hidden;
+}
+.doc-header-right li{
+  float: left;
+  margin: 0;
+}
+.doc-header-right a{
+  float: left;
+  height: 60%;
+  min-width: 80px;
+  color: #fff;
+  font-size: 14px;
+
+}
+.doc-header-left{
+  float: left;
 }
 
 .doc-toc-wrapper{
+  padding-top: 60px;
   width:200px;
+  height: 100%;
   position: fixed;
+  overflow: auto;
   left:0;
   top: 0;
   z-index: 2;
+}
+.doc-toc-wrapper >.doc-toc-list{
+  padding-bottom: 50px;
 }
 .doc-toc-wrapper ul{
   list-style: none;

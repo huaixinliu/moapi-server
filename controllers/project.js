@@ -20,7 +20,7 @@ marked.setOptions({
   headerPrefix:"doc-anchor-",
   tocPrefix:"doc-toc-",
   tables: true,
-  breaks: false,
+  breaks: true,
   sanitize: false,
   smartLists: true,
   smartypants: false,
@@ -300,8 +300,8 @@ async getRelateProjectList(ctx, next) {
 
     await ctx.render("doc",{
       title:project.name,
-      content:marked(md),
-      data:JSON.stringify(mdData,null,2)
+      id:project.id,
+      content:marked(md)
     })
   }
 
@@ -318,6 +318,7 @@ async getRelateProjectList(ctx, next) {
     .exec();
     const mdData=getMdData(project)
     const server=ejs.render(serverTemplate,mdData);
+
 
 
     ctx.set('Content-disposition','attachment;filename=app.js')
