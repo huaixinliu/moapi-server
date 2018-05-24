@@ -6,7 +6,7 @@ import {getMdData} from '../util/markedown'
 import ejs from 'ejs'
 import fs from 'fs'
 import path from 'path'
-import marked from 'marked'
+import marked from 'best-marked'
 import highlight from 'highlight.js'
 import extend from '../util/extend'
 import proxy from '../util/proxy'
@@ -18,12 +18,16 @@ marked.setOptions({
   pedantic: false,
   gfm: true,
   headerPrefix:"doc-anchor-",
+  tocPrefix:"doc-toc-",
   tables: true,
   breaks: false,
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false
+  xhtml: false,
+  ordered: true,
+  depthFrom: 1,
+  depthTo: 3
 });
 
 const markedown=fs.readFileSync(path.join(__dirname , '../views/markdown.ejs')).toString()
@@ -197,8 +201,10 @@ async getRelateProjectList(ctx, next) {
     .findOne({id: ctx.params.projectId})
     .populate({
       path:'modules',
+      select:"name interfases project_id description id -_id",
       populate:{
         path:'interfases',
+        select:"name url project_id module_id id req res headers method proxy_type -_id",
         populate:{
           path:'remark'
         }
@@ -294,7 +300,8 @@ async getRelateProjectList(ctx, next) {
 
     await ctx.render("doc",{
       title:project.name,
-      content:marked(md)
+      content:marked(md),
+      data:JSON.stringify(mdData,null,2)
     })
   }
 

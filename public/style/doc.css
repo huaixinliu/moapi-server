@@ -1,34 +1,38 @@
+body{
+  color: #444;
+  font-size: 14px;
+}
 h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
 }
 
 h1 {
-    color: #000000;
+    color: #09c;
     font-size: 28px;
 }
 
 h2 {
     border-bottom: 1px solid #CCCCCC;
-    color: #000000;
-    font-size: 24px;
-}
-
-h3 {
+    color: #09c;
     font-size: 18px;
 }
 
-h4 {
+h3 {
     font-size: 16px;
 }
 
-h5 {
+h4 {
     font-size: 14px;
+}
+
+h5 {
+    font-size: 12px;
 }
 
 h6 {
     color: #777777;
     background-color: inherit;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 hr {
@@ -83,4 +87,35 @@ th,td{
   border: 1px solid #ddd;
   padding: 8px;
   line-height: 1.42857143;
+}
+
+.doc-wrapper{
+  padding: 20px;
+  padding-left: 230px;
+}
+
+.doc-toc-wrapper{
+  width:200px;
+  position: fixed;
+  left:0;
+  top: 0;
+  z-index: 2;
+}
+.doc-toc-wrapper ul{
+  list-style: none;
+  padding: 0;
+}
+.doc-toc-order{
+  padding-right: 5px;
+}
+
+ul>.doc-toc-item a{
+  padding-left: 20px;
+  color: #666;
+}
+ul ul>.doc-toc-item a{
+  padding-left: 40px;
+}
+ul ul ul>.doc-toc-item a{
+  padding-left: 60px;
 }
