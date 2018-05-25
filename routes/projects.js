@@ -23,4 +23,7 @@ router.get('/doc/:projectId',Project.getDoc);
 router.get('/server/:projectId',Project.getServer);
 router.all('/mock/:projectId/*',Project.getMock);
 router.all('/mock/:projectId',Project.getMock);
+
+router.all('/test/:projectId/*',Project.getMock);
+router.all('/test/:projectId',Project.getMock);
 export default router

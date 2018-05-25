@@ -19,9 +19,9 @@ toc:
 
   <%for(var interfase of module.interfases){%>
 ## <%=interfase.name%>
-> 访问URL: <%=interfase.url%>
+> 访问URL: [<%=interfase.url%>](<%=interfase.testUrl%>)
 > 请求方式: `<%=interfase.method%>`
-> 简介: <%=interfase.description%>   
+> 简介: <%=interfase.description%>
 
 
 ### 备注
@@ -29,12 +29,16 @@ toc:
 
 
 ### headers
+<%if(interfase.headers.length){%>
 |字段名|值|描述及要求|
 |:---|:---|:---|
 <%for(var header of interfase.headers){%>|<%-header.name%>|<%-header.value%>|<%-header.description||"--"%>|
 <%}%>
-
+<%}else{%>
+无
+<%}%>
 ### 请求参数
+<%if(interfase.req.length){%>
 |字段名|数据类型|是否必填|描述及要求|
 |:---|:---:|:---:|:---|
 <%for(var request of interfase.req){%>|<%-request.name%>|<%-request.type%>|<%-request.required%>|<%-request.description||"--"%>|
@@ -42,11 +46,14 @@ toc:
 
 ### 请求参数例子
 ```json
-  <%-interfase.mockReq%>
+<%-interfase.mockReq%>
 ```
-
+<%}else{%>
+无
+<%}%>
 
 ### 响应数据
+<%if(interfase.req.length){%>
 |字段名|数据类型|说明|
 |:---|:---:|:---|
 <%for(var response of interfase.res){%>|<%-response.name%>|<%-response.type%>|<%-response.description||"--"%>|
@@ -54,7 +61,10 @@ toc:
 
 ### 响应数据例子
 ```json
-  <%-interfase.mockRes%>
+<%-interfase.mockRes%>
 ```
+<%}else{%>
+无
+<%}%>
   <%}%>
 <%}%>

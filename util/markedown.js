@@ -60,6 +60,32 @@ export function toMock(json){
 }
 
 
+function testHeader(interfase) {
+    if(!interfase.headers.length===0){
+      return ""
+    }
+     let data=[];
+     for(let item of interfase.headers){
+       data.push({"enabled":true,"key":item.name,"value":item.value})
+     }
+     return encodeURI(JSON.stringify(data));
+ }
+
+ function testReq(interfase) {
+       let method=interfase.method.toUpperCase();
+      if(!interfase.req.length===0){
+        return ""
+      }
+      let data=[];
+      let mockData=JSON.parse(interfase.mockReq);
+      for(let key in mockData){
+        data.push({"enabled":true,"key":key,"value":mockData[key]})
+      }
+      return (method==="POST"||method==="PUT")?"&body=":"&queryParameters="+encodeURI(JSON.stringify(data));
+  }
+
+
+
 export function getMdData(json){
   json=_ToCamelcase(json);
 
@@ -69,6 +95,9 @@ export function getMdData(json){
       interfase.mockRes=toMock(interfase.res)
       interfase.req=format(interfase.req)
       interfase.res=format(interfase.res)
+      interfase.testUrl=`http://api.yfyld.top:3014/project/test/${json.id}${interfase.url}#!method=${interfase.method.toUpperCase()}&headers=${testHeader(interfase)}${testReq(interfase)}`
+
+
     }
   }
 

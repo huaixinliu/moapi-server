@@ -13,7 +13,8 @@ import http from 'http';
 import _debug from 'debug';
 import mongoose from 'mongoose';
 import bluebird from 'bluebird';
-import camelcase from './middlewares/koa-camelcase'
+import camelcase from './middlewares/koa-camelcase';
+import restc from 'restc';
 
 import router from './routes';
 
@@ -33,6 +34,11 @@ app.use(cors());
 app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }));
+
+
+app.use(restc.koa2({
+  includes: [/^\/project\/test/]
+}))
 
 app.use(json());
 app.use(camelcase());
