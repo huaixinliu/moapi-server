@@ -102,7 +102,7 @@ h2{
   padding-top: 60px;
 }
 .doc-wrapper{
-  padding: 60px 20px 20px 220px;
+  padding: 60px 20px 20px 270px;
 }
 .doc-header{
   background: #09c;;
@@ -145,13 +145,14 @@ h2{
 
 .doc-toc-wrapper{
   padding-top: 60px;
-  width:200px;
+  width:250px;
   height: 100%;
   position: fixed;
   overflow: auto;
   left:0;
   top: 0;
   z-index: 2;
+  border-right: 1px solid #ddd;
 }
 .doc-toc-wrapper >.doc-toc-list{
   padding-bottom: 50px;
