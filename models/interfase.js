@@ -45,7 +45,7 @@ const InterfaseSchema = new Schema({
     mock_value: Schema.Types.Mixed,
     description: Schema.Types.Mixed
   }],
-  remark:[
+  remarks:[
     {
       type: Schema.Types.ObjectId,
       ref: 'Remark'

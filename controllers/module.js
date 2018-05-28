@@ -36,6 +36,11 @@ class Module extends BaseController{
       project:project._id
     });
     const newModule = await ModuleModel.addModule(module,project);
+
+    ctx.record={
+      project,
+      module
+    }
     if (newModule) {
       ctx.body = newModule;
     }
@@ -56,18 +61,25 @@ class Module extends BaseController{
       return;
     }
 
-    if(ctx.user.type!==4){
-      const project= await ProjectModel.findOne({
-        id:module.project_id
-      });
-      if(!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
-        ctx.status = 403;
-        ctx.body = {message:"没有修改模块权限"};
-        return;
-      }
+    const project= await ProjectModel.findOne({
+      id:module.project_id
+    });
+
+
+
+    if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
+      ctx.status = 403;
+      ctx.body = {message:"没有修改模块权限"};
+      return;
     }
 
+
     await ModuleModel.updateModule(module,ctx.request.body)
+
+    ctx.record={
+      project,
+      module
+    }
 
     ctx.body = {message:"更新成功"};
   }
@@ -98,6 +110,11 @@ class Module extends BaseController{
 
 
     await ModuleModel.deleteModule(module,project);
+
+    ctx.record={
+      project,
+      module
+    }
     ctx.body ={message:"删除成功"};
   }
 

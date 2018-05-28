@@ -4,6 +4,7 @@ import xss from 'xss';
 import defaultProject from './../defaultData/project'
 import BaseController from '../base/baseController'
 import {getMdData} from '../util/markedown'
+import parseDate from "../util/parseDate"
 import ejs from 'ejs'
 import fs from 'fs'
 import path from 'path'
@@ -96,6 +97,10 @@ const packageInfo = `
   }
 }
 `
+
+
+
+
 class Project extends BaseController {
   constructor() {
     super()
@@ -144,6 +149,7 @@ class Project extends BaseController {
       admin: ctx.user._id
     });
     const newproject = await ProjectModel.addProject(project);
+    ctx.record={project}
     if (newproject) {
       ctx.body = "";
     }
@@ -168,7 +174,7 @@ class Project extends BaseController {
     }
 
     await ProjectModel.deleteProject(project);
-
+    ctx.record={project}
     ctx.body = "";
 
   }
@@ -230,7 +236,7 @@ class Project extends BaseController {
       newProjectInfo.guests=guests.map(user=>user._id);
     }
     await ProjectModel.updateProject(project, newProjectInfo);
-
+    ctx.record={project}
     ctx.body = "修改成功";
 
   }
@@ -326,7 +332,8 @@ class Project extends BaseController {
         path: 'interfases',
         select: "name url project_id module_id id req res headers method proxy_type versions -_id",
         populate: {
-          path: 'remark'
+          path: 'remarks',
+          select: "id message project_id module_id interfase_id creator updatedAt createdAt version -_id",
         }
       }
     })
@@ -391,11 +398,14 @@ class Project extends BaseController {
     let project = await ProjectModel.findOne({id: ctx.params.projectId}).populate({
       path: 'modules',
       populate: {
-        path: 'interfases'
+        path: 'interfases',
+        populate: {
+          path: 'remarks'
+        }
       }
     }).exec();
     const mdData = getMdData(project)
-    const md = ejs.render(markedown, mdData);
+    const md = ejs.render(markedown, {...mdData,parseDate});
     ctx.set('Content-disposition', 'attachment;filename=' + encodeURIComponent(project.name) + '.md')
     ctx.body = md
   }
@@ -404,11 +414,14 @@ class Project extends BaseController {
     let project = await ProjectModel.findOne({id: ctx.params.projectId}).populate({
       path: 'modules',
       populate: {
-        path: 'interfases'
+        path: 'interfases',
+        populate: {
+          path: 'remarks'
+        }
       }
     }).exec();
     const mdData = getMdData(project)
-    const md = ejs.render(markedown, mdData);
+    const md = ejs.render(markedown, {...mdData,parseDate});
 
     await ctx.render("doc", {
       title: project.name,

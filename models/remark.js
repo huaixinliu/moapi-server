@@ -6,32 +6,28 @@ const remarkSchema = new mongoose.Schema({
 	message: String,
 	interfase_id: Number,
 	module_id: Number,
-  project_id:Number
+  project_id:Number,
+	version:String
 },{timestamps:true});
 
 
-remarkSchema.statics.addRemark= async(remark) => {
+remarkSchema.statics.addRemark= async(remark,interfase) => {
   await remark.save();
-  const interfase=await interfaseModel.findOne({id:remark.interfase_id})
-  if(interfase){
-    interfase.remark.push(remark._id);
-    await interfase.save()
-  }
+	interfase.remarks.push(remark._id);
+	await interfase.save()
+
 };
 
 remarkSchema.statics.updateRemark= async(remark,newRemarkInfo) => {
-  console.log(remark)
   remark.set(newRemarkInfo);
   await remark.save()
 };
 
-remarkSchema.statics.deleteRemark= async(remark) => {
+remarkSchema.statics.deleteRemark= async(remark,interfase) => {
   await remark.remove();
-  const interfase=await interfaseModel.findOne({id:remark.interfase_id})
-  if(!interfase){return;}
-  const index=interfase.remark.findIndex(item=>item.equals(remark._id));
+  const index=interfase.remarks.findIndex(item=>item.equals(remark._id));
   if(index>=0){
-    interfase.remark.splice(index,1)
+    interfase.remarks.splice(index,1)
     interfase.save()
   }
 };

@@ -13,7 +13,7 @@ class Record extends BaseController{
 
     const records=await RecordModel.find({interfase_id:interfaseId})
         .where('type')
-        .in(['ADD_INTERFASE', 'UPDATE_INTERFASE','DELETE_INTERFASE'])
+        .sort({'createdAt':-1})
         .skip(pageSize*page)
         .limit(pageSize);
 
