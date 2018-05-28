@@ -76,12 +76,16 @@ function testHeader(interfase) {
       if(!interfase.req.length===0){
         return ""
       }
-      let data=[];
       let mockData=JSON.parse(interfase.mockReq);
-      for(let key in mockData){
-        data.push({"enabled":true,"key":key,"value":mockData[key]})
+      if(method==="POST"||method==="PUT"){
+        return "&body="+encodeURIComponent(JSON.stringify(mockData,null,2));
+      }else{
+        let data=[];
+        for(let key in mockData){
+          data.push({"enabled":true,"key":key,"value":mockData[key]})
+        }
+        return "&queryParameters="+encodeURI(JSON.stringify(data));
       }
-      return (method==="POST"||method==="PUT")?"&body=":"&queryParameters="+encodeURI(JSON.stringify(data));
   }
 
 
