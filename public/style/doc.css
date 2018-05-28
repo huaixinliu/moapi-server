@@ -167,6 +167,9 @@ h2{
 ul>.doc-toc-item a{
   padding-left: 20px;
   color: #666;
+  word-break: break-all;
+  display: block;
+  color: #09c;
 }
 ul ul>.doc-toc-item a{
   padding-left: 40px;
