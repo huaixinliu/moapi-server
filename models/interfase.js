@@ -9,6 +9,7 @@ const InterfaseSchema = new Schema({
   url: String,
   module_id:Number,
   project_id:Number,
+  versions:[String],
   module:{
     type: Schema.Types.ObjectId,
     ref: 'Module'

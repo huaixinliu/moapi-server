@@ -7,5 +7,6 @@ export default {
   req:[],
   headers:[],
   remind:[],
-  record:[]
+  record:[],
+  versions:["1.0.0"]
   }
