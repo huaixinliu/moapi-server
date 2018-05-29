@@ -7,7 +7,7 @@ export default{
   developers: [],
   modules:[],
   version:"V1.0.0",
-  versions:[],
+  versions:["V1.0.0"],
   template:{
     headers:[],
     req:[],

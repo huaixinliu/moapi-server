@@ -105,6 +105,15 @@ class Interfase extends BaseController{
     }
 
 
+    if(ctx.request.body.__v<interfase.__v&&!ctx.request.body.force_save){
+      ctx.status = 400;
+      ctx.body = {
+        message: "保存失败,该接口已被更新",
+      };
+      return;
+    }
+
+
 
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
@@ -113,10 +122,12 @@ class Interfase extends BaseController{
       return;
     }
 
+    const interfaseInfo={
+      ...ctx.request.body
+    }
+    delete interfaseInfo.__v;
 
-
-
-    await InterfaseModel.updateInterfase(interfase,ctx.request.body)
+    await InterfaseModel.updateInterfase(interfase,interfaseInfo)
     ctx.record.interfase = interfase;
     ctx.record.module = module;
     ctx.record.project = project;

@@ -330,7 +330,7 @@ class Project extends BaseController {
       select: "name interfases project_id description id -_id",
       populate: {
         path: 'interfases',
-        select: "name url project_id module_id id req res headers method proxy_type versions -_id",
+        select: "name url project_id module_id id req res headers method proxy_type versions __v -_id",
         populate: {
           path: 'remarks',
           select: "id message project_id module_id interfase_id creator updatedAt createdAt version -_id",

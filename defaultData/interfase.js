@@ -8,5 +8,5 @@ export default {
   headers:[],
   remind:[],
   record:[],
-  versions:["1.0.0"]
+  versions:["V1.0.0"]
   }
