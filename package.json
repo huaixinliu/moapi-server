@@ -6,7 +6,7 @@
     "start": "node index",
     "dev": "./node_modules/.bin/nodemon index",
     "inspect": "./node_modules/.bin/nodemon --inspect-brk index",
-    "prd": "pm2 start index.js",
+    "prd": "pm2 start index.js --name moapi-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
