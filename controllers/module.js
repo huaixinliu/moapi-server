@@ -9,16 +9,11 @@ class Module extends BaseController{
     this.addModule=this.addModule.bind(this);
   }
 
-
   async addModule(ctx, next){
-
-
 
     const project= await ProjectModel.findOne({
       id:ctx.request.body.project_id
     });
-
-
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
@@ -26,30 +21,23 @@ class Module extends BaseController{
       return;
     }
 
-
-
     const moduleId=await this.getId('module_id');
-
     const module = new ModuleModel({
       ...ctx.request.body,
       id:moduleId,
       project:project._id
     });
-    const newModule = await ModuleModel.addModule(module,project);
+    await ModuleModel.addModule(module,project);
 
     ctx.record={
       project,
       module
     }
-    if (newModule) {
-      ctx.body = newModule;
-    }
+    ctx.body = module;
+
   }
 
   async updateModule(ctx, next) {
-
-
-
 
     const module=await ModuleModel.findOne({
       id: ctx.params.moduleId
@@ -65,17 +53,13 @@ class Module extends BaseController{
       id:module.project_id
     });
 
-
-
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
       ctx.body = {message:"没有修改模块权限"};
       return;
     }
 
-
     await ModuleModel.updateModule(module,ctx.request.body)
-
     ctx.record={
       project,
       module
@@ -85,10 +69,6 @@ class Module extends BaseController{
   }
 
   async deleteModule(ctx, next) {
-
-
-
-
     const moduleId =ctx.params.moduleId
 
     const module=await ModuleModel.findOne({id:moduleId})
@@ -98,7 +78,6 @@ class Module extends BaseController{
       ctx.body={message:"模块不存在"}
     }
 
-
     const project= await ProjectModel.findOne({
       id:module.project_id
     });
@@ -107,7 +86,6 @@ class Module extends BaseController{
       ctx.body = {message:"没有删除模块权限"};
       return;
     }
-
 
     await ModuleModel.deleteModule(module,project);
 

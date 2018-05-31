@@ -12,41 +12,33 @@ class Interfase extends BaseController{
     this.addInterfase=this.addInterfase.bind(this);
   }
 
-  async getInterfase(ctx, next) {
-    ctx.checkParams('interfaseId').notEmpty("参数错误");
-    if (ctx.errors) {
-      ctx.status = 400;
-      ctx.body = ctx.errors;
-      return;
-    }
 
-    const interfase = await InterfaseModel.findOne({id: ctx.params.interfaseId}).exec();
+  async getInterfase(ctx, next) {
+
+    const interfase = await InterfaseModel.findOne({id: ctx.params.interfaseId});
 
     if (!interfase) {
       ctx.status = 400;
       ctx.body = {
         msg: "接口不存在"
       };
-    }else{
-      ctx.body = {
-        id:interfase.id,
-        name:interfase.name,
-        method: interfase.method,
-        url: interfase.url,
-        res: interfase.res,
-        req:interfase.req
-      };
+      return;
     }
+
+    ctx.body = {
+      id:interfase.id,
+      name:interfase.name,
+      method: interfase.method,
+      url: interfase.url,
+      res: interfase.res,
+      req:interfase.req
+    };
   }
 
   async addInterfase(ctx, next){
 
-
-
     const module=await ModuleModel.findOne({id:ctx.request.body.module_id});
     const project=await ProjectModel.findOne({id:ctx.request.body.project_id});
-
-
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
@@ -56,11 +48,7 @@ class Interfase extends BaseController{
       return;
     }
 
-
-
-
     const interfaseId=await this.getId('interfase_id');
-
     const interfaseInfo={
       ...defaultInterfase,
       ...project.template,
@@ -71,13 +59,12 @@ class Interfase extends BaseController{
     }
 
     const interfase = new InterfaseModel(interfaseInfo);
-    const newInterfase = await InterfaseModel.addInterfase(interfase,module);
-    if (newInterfase) {
-      ctx.record.interfase = newInterfase;
-      ctx.record.module = module;
-      ctx.record.project = project;
-      ctx.body={message:"添加成功"}
-    }
+    await InterfaseModel.addInterfase(interfase,module);
+
+    ctx.record.interfase = interfase;
+    ctx.record.module = module;
+    ctx.record.project = project;
+    ctx.body={message:"添加成功"}
   }
 
 
@@ -87,8 +74,6 @@ class Interfase extends BaseController{
 
   async updateInterfase(ctx, next) {
 
-
-
     const interfase =await InterfaseModel
     .findOne({
       id: ctx.params.interfaseId
@@ -96,14 +81,13 @@ class Interfase extends BaseController{
     .populate("module")
     .populate("project");
 
-    const module =interfase.module;
-    const project =interfase.project;
-
     if(!interfase){
-
+      ctx.status = 400;
+      ctx.body = {
+        message: "接口不存在",
+      };
       return;
     }
-
 
     if(ctx.request.body.__v<interfase.__v&&!ctx.request.body.force_save){
       ctx.status = 400;
@@ -113,8 +97,8 @@ class Interfase extends BaseController{
       return;
     }
 
-
-
+    const module =interfase.module;
+    const project =interfase.project;
 
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))&&!project.reporters.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
@@ -155,14 +139,11 @@ class Interfase extends BaseController{
     const module =interfase.module;
     const project =interfase.project;
 
-
-
     if(ctx.user.type!==4&&!project.admin.equals(ctx.user._id)&&!project.developers.find(id=>id.equals(ctx.user._id))){
       ctx.status = 403;
       ctx.body = {message:"没有删除接口权限"};
       return;
     }
-
 
     await InterfaseModel.deleteInterfase(interfase);
 

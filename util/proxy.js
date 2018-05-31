@@ -1,5 +1,6 @@
-import request from 'request-promise';
+import axios from 'axios';
 import pathToRegexp from 'path-to-regexp';
+
 
 function replacePathParams(path, params) {
     const keys = [];
@@ -20,14 +21,16 @@ const hasColons = /:/;
 export default function proxy(ctx,next,path,options) {
     return new Promise((resolve,reject)=>{
       const shouldReplacePathParams = hasColons.test(path);
-          const requestOpts = {
-              url: options.host + (path || ctx.url),
-              method: ctx.method,
-              headers:ctx.headers,
-              qs: ctx.query,
-              resolveWithFullResponse: true
-          };
-          
+      const requestOpts = {
+          url: (options.host+"/"+(path || ctx.url)).replace(/([^:])\/\//g,"$1/"),
+          method: ctx.method,
+          headers:ctx.headers,
+          params: ctx.query,
+          data:ctx.request.body,
+          timeout:10000,
+          withCredentials:true,
+      };
+  console.log(requestOpts)
 
           // if we have dynamic segments in the url
           if (shouldReplacePathParams) {
@@ -50,25 +53,13 @@ export default function proxy(ctx,next,path,options) {
               }
           }
 
-      console.log(requestOpts)
-          request(requestOpts)
+
+          axios(requestOpts)
               .then(response => {
                   resolve(response)
-
-                  // Proxy over response headers
-                  // Object.keys(response.headers).forEach(
-                  //     h => ctx.set(h, response.headers[h])
-                  // );
-                  //
-                  // ctx.status = response.statusCode;
-                  // ctx.body = response.body;
-                  //
-                  // return next();
               })
               .catch(err => {
                   reject(err)
-                  // ctx.body = err.reason;
-                  // ctx.status = err.statusCode || 500;
               });
     })
 

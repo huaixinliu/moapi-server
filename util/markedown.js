@@ -99,7 +99,7 @@ export function getMdData(json){
       interfase.mockRes=toMock(interfase.res)
       interfase.req=format(interfase.req)
       interfase.res=format(interfase.res)
-      interfase.testUrl=`http://api.yfyld.top:3014/project/test/${json.id}${interfase.url}#!method=${interfase.method.toUpperCase()}&headers=${testHeader(interfase)}${testReq(interfase)}`
+      interfase.testUrl=(`http://api.yfyld.top:3014/project/test/${json.id}/${interfase.url}#!method=${interfase.method.toUpperCase()}&headers=${testHeader(interfase)}${testReq(interfase)}`).replace(/([^:])\/\//,"$1/");
 
 
     }

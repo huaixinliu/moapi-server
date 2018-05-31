@@ -110,41 +110,38 @@ class Project extends BaseController {
 
     const projectId = await this.getId('project_id');
 
-
-    const newProjectInfo={
+    const projectInfo={
       ...ctx.request.body
     }
 
-
-
-    if(newProjectInfo.developers){
+    if(projectInfo.developers){
       const developers=await UserModel
       .find({})
       .where("id")
-      .in(newProjectInfo.developers);
-      newProjectInfo.developers=developers.map(user=>user._id);
+      .in(projectInfo.developers);
+      projectInfo.developers=developers.map(user=>user._id);
     }
 
 
-    if(newProjectInfo.reporters){
+    if(projectInfo.reporters){
       const reporters=await UserModel
       .find({})
       .where("id")
-      .in(newProjectInfo.reporters);
-      newProjectInfo.reporters=reporters.map(user=>user._id);
+      .in(projectInfo.reporters);
+      projectInfo.reporters=reporters.map(user=>user._id);
     }
 
-    if(newProjectInfo.guests){
+    if(projectInfo.guests){
       const guests=await UserModel
       .find({})
       .where("id")
-      .in(newProjectInfo.guests);
-      newProjectInfo.guests=guests.map(user=>user._id);
+      .in(projectInfo.guests);
+      projectInfo.guests=guests.map(user=>user._id);
     }
 
     const project = new ProjectModel({
       ...defaultProject,
-      ...newProjectInfo,
+      ...projectInfo,
       id: projectId,
       admin: ctx.user._id
     });
@@ -454,6 +451,7 @@ class Project extends BaseController {
   }
 
   async getMock(ctx, next) {
+    console.log(ctx.params.projectId)
     let project = await ProjectModel.findOne({id: ctx.params.projectId}).populate({
       path: 'modules',
       populate: {
@@ -482,7 +480,7 @@ class Project extends BaseController {
         ctx.body = curInterfase.mockRes
       } else {
 
-        let response = await proxy(ctx, next, url, {host: "http://api.91jkys.com:9096/"})
+        let response = await proxy(ctx, next, url, {host: project.proxy})
         if (response) {
           Object.keys(response.headers).forEach(h => ctx.set(h, response.headers[h]));
 
@@ -504,16 +502,18 @@ class Project extends BaseController {
       }
     } else {
       try {
-        let response = await proxy(ctx, next, url, {host: "http://api.91jkys.com:9096/"})
+        let response = await proxy(ctx, next, url, {host: project.proxy})
         if (response) {
           Object.keys(response.headers).forEach(h => ctx.set(h, response.headers[h]));
-          ctx.status = response.statusCode;
-          ctx.body = response.body;
+          ctx.status = response.status;
+          ctx.body = response.data;
         }
       } catch (err) {
-        console.log(err.request)
-        ctx.body = err.response.body;
-        ctx.status = err.statusCode || 500;
+        Object.keys(err.response.headers).forEach(
+            h => ctx.set(h, err.response.headers[h])
+        );
+        ctx.body = err.response.data;
+        ctx.status = err.response.status || 500;
       }
 
     }
