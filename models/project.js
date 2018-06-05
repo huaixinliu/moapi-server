@@ -41,7 +41,13 @@ const ProjectSchema = new Schema({
     }
   ],
   version: String,
-  versions: [String]
+  versions: [String],
+  docs:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Doc'
+    }
+  ]
 }, {timestamps: true});
 
 ProjectSchema.index({id: 1});

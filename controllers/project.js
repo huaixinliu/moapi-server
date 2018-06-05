@@ -249,7 +249,10 @@ class Project extends BaseController {
 
     let projects = []
     if (ctx.user.type === 4) {
-      projects = await ProjectModel.find({}).populate("admin")
+      projects = await ProjectModel
+      .find({})
+      .populate("admin")
+      .populate("docs")
     } else {
       projects = await ProjectModel.find({
         $or: [
@@ -274,7 +277,10 @@ class Project extends BaseController {
 
   async getSelfProjectList(ctx, next) {
 
-    const projects = await ProjectModel.find({admin: ctx.user._id}).populate("admin")
+    const projects = await ProjectModel
+    .find({admin: ctx.user._id})
+    .populate("admin")
+    .populate("docs")
 
     if (!projects) {
       ctx.status = 400;
@@ -288,7 +294,10 @@ class Project extends BaseController {
 
   async getDevelopProjectList(ctx, next) {
 
-    const projects = await ProjectModel.find({"developers": ctx.user._id}).populate("admin");
+    const projects = await ProjectModel
+    .find({"developers": ctx.user._id})
+    .populate("admin")
+    .populate("docs");
 
     if (!projects) {
       ctx.status = 400;
@@ -308,7 +317,10 @@ class Project extends BaseController {
       return;
     }
 
-    const projects = await ProjectModel.find({"reporters": ctx.user._id}).populate("admin");
+    const projects = await ProjectModel
+    .find({"reporters": ctx.user._id})
+    .populate("admin")
+    .populate("docs");
 
     if (!projects) {
       ctx.status = 400;
@@ -350,7 +362,7 @@ class Project extends BaseController {
 
   async getProjectInfo(ctx, next) {
 
-    const project = await ProjectModel.findOne({id: ctx.params.projectId}).populate("admin").populate("reporters").populate("guests").populate("developers")
+    const project = await ProjectModel.findOne({id: ctx.params.projectId}).populate("admin").populate("docs").populate("reporters").populate("guests").populate("developers")
 
     let permission = 1;
 
@@ -380,7 +392,8 @@ class Project extends BaseController {
         admin: project.admin,
         template: project.template,
         versions:project.versions,
-        version:project.version
+        version:project.version,
+        docs:project.docs
       };
     }
   }
