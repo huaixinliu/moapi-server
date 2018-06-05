@@ -103,6 +103,7 @@ h2{
 }
 .doc-wrapper{
   padding: 60px 20px 20px 270px;
+  overflow-x: hidden;
 }
 .doc-header{
   background: #09c;;
@@ -146,6 +147,7 @@ h2{
 .doc-toc-wrapper{
   padding-top: 60px;
   width:250px;
+  padding-right: 10px;
   height: 100%;
   position: fixed;
   overflow: auto;
