@@ -23,7 +23,7 @@ validate(app);
 var debug = _debug('demo:server');
 
 mongoose.Promise = bluebird;
-mongoose.connect('mongodb://moapi:123456@97.64.36.18:3017/moapi',{useMongoClient: true});
+mongoose.connect('mongodb://moapi:123456@127.0.0.1:3017/moapi',{useMongoClient: true});
 
 // error handler
 onerror(app);
