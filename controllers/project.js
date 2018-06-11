@@ -254,7 +254,8 @@ class Project extends BaseController {
       .populate("admin")
       .populate("docs")
     } else {
-      projects = await ProjectModel.find({
+      projects = await ProjectModel
+      .find({
         $or: [
           {
             public: true
@@ -262,7 +263,9 @@ class Project extends BaseController {
             guests: ctx.user._id
           }
         ]
-      }).populate("admin")
+      })
+      .populate("admin")
+      .populate("docs")
     }
 
     if (!projects) {
