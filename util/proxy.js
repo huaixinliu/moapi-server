@@ -30,29 +30,18 @@ export default function proxy(ctx,next,path,options) {
           timeout:10000,
           withCredentials:true,
       };
-  console.log(requestOpts)
+
 
           // if we have dynamic segments in the url
           if (shouldReplacePathParams) {
               requestOpts.url = options.host + replacePathParams(path, ctx.params);
           }
 
-          // something possibly went wrong if they have no body but are sending a
-          // put or a post
-          if (requestOpts.method === 'POST' || requestOpts.method === 'PUT') {
-
-              if (!ctx.request.body) {
-                  console.warn('sending PUT or POST but no request body found');
-              } else {
-                  requestOpts.body = ctx.request.body;
-              }
-
-              // make request allow js objects if we are sending json
-              if (ctx.request.type === 'application/json') {
-                  requestOpts.json = true;
-              }
+          if(requestOpts.headers.host){
+            requestOpts.headers.host=options.host.replace(/.*:\/\//,'').replace(/\//,'');
           }
 
+//console.log(requestOpts)
 
           axios(requestOpts)
               .then(response => {

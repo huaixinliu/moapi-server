@@ -525,11 +525,17 @@ class Project extends BaseController {
           ctx.body = response.data;
         }
       } catch (err) {
-        Object.keys(err.response.headers).forEach(
-            h => ctx.set(h, err.response.headers[h])
-        );
-        ctx.body = err.response.data;
-        ctx.status = err.response.status || 500;
+        if(err.response){
+          Object.keys(err.response.headers).forEach(
+              h => ctx.set(h, err.response.headers[h])
+          );
+          ctx.body = err.response.data;
+          ctx.status = err.response.status || 500;
+        }else{
+          ctx.body = err;
+          ctx.status = 500;
+        }
+
       }
 
     }
